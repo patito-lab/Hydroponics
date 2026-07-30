@@ -1,0 +1,21 @@
+# Build output
+Debug/
+Release/
+*.o
+*.d
+*.su
+*.cyclo
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+
+# STM32CubeIDE workspace metadata (machine-specific, not project config)
+.metadata/
+RTE/
+*.launch
+
+# OS
+.DS_Store
+Thumbs.db
