@@ -19,3 +19,4 @@ RTE/
 # OS
 .DS_Store
 Thumbs.db
+.osx.project
