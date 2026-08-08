@@ -1,20 +1,21 @@
 # 005: Opaque reservoir and stock bottles
 
-**Date:**
+**Date:** 26Jul26
 **Status:** Accepted
 
 ## Context
 
-[fill in: reservoir/container material decisions, including the stock bottle line item in the BOM]
+Need to pick a hydroponic method and containers to support it.
 
 ## Options considered
 
-[fill in: e.g. clear acrylic/PETG vs. opaque HDPE]
+Ebb/flow, NFT, and DWC for hydroponics methods. Clear vs opaque containers. Types of plastic
+
 
 ## Decision
 
-Reservoir and nutrient stock bottles are opaque, not clear or translucent.
+DWC selected. Using plastic window planter box. 1/8" PVC for lid. HDPE for dosing bottles
 
 ## Why
 
-Light penetrating a nutrient reservoir promotes algae growth in the solution, which competes with the plants for nutrients and can clog pump inlets and tubing. Blocking light out is standard practice in DWC systems for this reason.
+Window box is cheap-ish, the right size for my space, and looks decent. Opaque materials are needed as light entering a nutrient reservoir promotes algae growth in the solution, which competes with the plants for nutrients and can clog pump inlets and tubing. Blocking light out is standard practice in DWC systems for this reason. Cover helps block light and is needed for net pots to rest on. 1/8" PVC is cheap and easy to cut. Ribs making a T-beam will be used to strengthen it. Vertical ribs near the walls of the planter box give the lid something to rest on and provide a mounting point for tubing + sensors.

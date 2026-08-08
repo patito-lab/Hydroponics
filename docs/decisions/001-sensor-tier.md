@@ -1,6 +1,6 @@
 # 001: Sensor tier, DFRobot for V1, Atlas Scientific for V2
 
-**Date:**
+**Date:** 28Jul26
 **Status:** Accepted
 
 ## Context
