@@ -97,7 +97,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  status_leds_set(level_check_is_full());
+	  status_leds_set(level_check_is_full() ? SYS_OK : SYS_FAULT);
 	  HAL_Delay(50);
     /* USER CODE BEGIN 3 */
   }
