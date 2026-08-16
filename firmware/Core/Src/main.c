@@ -97,7 +97,40 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  status_leds_set(level_check_is_full() ? SYS_OK : SYS_FAULT);
+	  // latches on once the level drops below the refill mark, and only
+	  // clears once the tank is actually topped back up to the full mark -
+	  // so yellow stays on for the whole refill cycle, not just until the
+	  // level ticks back above the refill switch.
+	  static bool needs_refill = false;
+
+	  if (tank_is_full())
+	  {
+		  needs_refill = false;
+	  }
+	  else if (tank_below_refill())
+	  {
+		  needs_refill = true;
+	  }
+
+	  tank_state_t tank_state;
+	  if (tank_is_low())
+	  {
+		  tank_state = TANK_LOW;
+	  }
+	  else if (needs_refill)
+	  {
+		  tank_state = TANK_REFILL;
+	  }
+	  else
+	  {
+		  tank_state = TANK_FULL;
+	  }
+	  tank_leds_set(tank_state);
+
+	  bot1_leds_set(bot1_is_empty() ? BOT_EMPTY : BOT_FULL);
+	  bot2_leds_set(bot2_is_empty() ? BOT_EMPTY : BOT_FULL);
+	  bot3_leds_set(bot3_is_empty() ? BOT_EMPTY : BOT_FULL);
+	  bot4_leds_set(bot4_is_empty() ? BOT_EMPTY : BOT_FULL);
 	  HAL_Delay(50);
     /* USER CODE BEGIN 3 */
   }

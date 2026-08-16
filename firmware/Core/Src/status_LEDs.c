@@ -68,11 +68,16 @@ void status_leds_init(void)
     init.Pin  = TANK_GREEN_PIN | TANK_YELLOW_PIN | TANK_RED_PIN;
     HAL_GPIO_Init(GPIOC, &init);
 
-    status_leds_set(SYS_OFF);
+    sys_leds_set(SYS_OFF);
+    tank_leds_set(TANK_OFF);
+    bot1_leds_set(BOT_OFF);
+    bot2_leds_set(BOT_OFF);
+    bot3_leds_set(BOT_OFF);
+    bot4_leds_set(BOT_OFF);
 }
 
-//set status LED
-void status_leds_set(sys_state_t state)
+//set system status LED
+void sys_leds_set(sys_state_t state)
 {
     // turn green on, green is sunk from +5V: LOW = lit
     HAL_GPIO_WritePin(SYS_GREEN_PORT, SYS_GREEN_PIN,
@@ -82,8 +87,6 @@ void status_leds_set(sys_state_t state)
     HAL_GPIO_WritePin(SYS_RED_PORT, SYS_RED_PIN,
                       (state == SYS_FAULT) ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
-
-//set tank LED -> MISSING
 
 //set tank LEDS
 void tank_leds_set(tank_state_t state)
@@ -103,49 +106,49 @@ void tank_leds_set(tank_state_t state)
 
 
 //set bottle 1 LED
-void bot1_leds_set(bot1_state_t state)
+void bot1_leds_set(bottle_state_t state)
 {
     // turn green on, green is sunk from +5V: LOW = lit
     HAL_GPIO_WritePin(BOT1_GREEN_PORT, BOT1_GREEN_PIN,
-                      (state == BOT1_FULL) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+                      (state == BOT_FULL) ? GPIO_PIN_RESET : GPIO_PIN_SET);
 
     //turn red on, red is sourced from the pin: HIGH = lit
     HAL_GPIO_WritePin(BOT1_RED_PORT, BOT1_RED_PIN,
-                      (state == BOT1_LOW) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+                      (state == BOT_EMPTY) ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
 //set bottle 2 LED
-void bot2_leds_set(bot2_state_t state)
+void bot2_leds_set(bottle_state_t state)
 {
     // turn green on, green is sunk from +5V: LOW = lit
     HAL_GPIO_WritePin(BOT2_GREEN_PORT, BOT2_GREEN_PIN,
-                      (state == BOT2_FULL) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+                      (state == BOT_FULL) ? GPIO_PIN_RESET : GPIO_PIN_SET);
 
     //turn red on, red is sourced from the pin: HIGH = lit
     HAL_GPIO_WritePin(BOT2_RED_PORT, BOT2_RED_PIN,
-                      (state == BOT2_LOW) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+                      (state == BOT_EMPTY) ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
 //set bottle 3 LED
-void bot3_leds_set(bot3_state_t state)
+void bot3_leds_set(bottle_state_t state)
 {
     // turn green on, green is sunk from +5V: LOW = lit
     HAL_GPIO_WritePin(BOT3_GREEN_PORT, BOT3_GREEN_PIN,
-                      (state == BOT3_FULL) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+                      (state == BOT_FULL) ? GPIO_PIN_RESET : GPIO_PIN_SET);
 
     //turn red on, red is sourced from the pin: HIGH = lit
     HAL_GPIO_WritePin(BOT3_RED_PORT, BOT3_RED_PIN,
-                      (state == BOT3_LOW) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+                      (state == BOT_EMPTY) ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
 //set bottle 4 LED
-void bot1_leds_set(bot4_state_t state)
+void bot4_leds_set(bottle_state_t state)
 {
     // turn green on, green is sunk from +5V: LOW = lit
     HAL_GPIO_WritePin(BOT4_GREEN_PORT, BOT4_GREEN_PIN,
-                      (state == BOT4_FULL) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+                      (state == BOT_FULL) ? GPIO_PIN_RESET : GPIO_PIN_SET);
 
     //turn red on, red is sourced from the pin: HIGH = lit
-    HAL_GPIO_WritePin(BOT4RED_PORT, BOT4_RED_PIN,
-                      (state == BOT4_LOW) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(BOT4_RED_PORT, BOT4_RED_PIN,
+                      (state == BOT_EMPTY) ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }

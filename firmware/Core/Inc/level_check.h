@@ -11,6 +11,16 @@
 #include <stdbool.h>
 
 void level_check_init(void);
-bool level_check_is_full(void);
+
+// main tank float switches
+bool tank_is_low(void);       // true: water at/below the LOW mark
+bool tank_below_refill(void); // true: water below the REFILL mark
+bool tank_is_full(void);      // true: water at/above the FULL (high) mark
+
+// bottle float switches
+bool bot1_is_empty(void);
+bool bot2_is_empty(void);
+bool bot3_is_empty(void);
+bool bot4_is_empty(void);
 
 #endif /* INC_LEVEL_CHECK_H_ */
