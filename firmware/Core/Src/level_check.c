@@ -63,37 +63,79 @@ void level_check_init(void)
 // bodies - normally-closed instead of normally-open), same pull-up wiring:
 // RESET (LOW) when open/no liquid contact, SET (HIGH) when liquid present.
 
+// debounce is sampled once per main-loop pass (50 ms), so this needs no
+// timer of its own.
+#define DEBOUNCE_SAMPLES 3  // ~150 ms at the 50 ms main loop poll rate
+
+typedef struct {
+    bool stable;
+    bool candidate;
+    uint8_t count;
+} debounce_t;
+
+static bool debounce_update(debounce_t *d, bool raw)
+{
+    if (raw == d->candidate) {
+        if (d->count < DEBOUNCE_SAMPLES) {
+            d->count++;
+        }
+    } else {
+        d->candidate = raw;
+        d->count = 1;
+    }
+
+    if (d->count >= DEBOUNCE_SAMPLES) {
+        d->stable = d->candidate;
+    }
+
+    return d->stable;
+}
+
 bool tank_is_low(void)
 {
-    return (HAL_GPIO_ReadPin(TANK_LOW_PORT, TANK_LOW_PIN) == GPIO_PIN_RESET);
+    static debounce_t d = {0};
+    bool raw = (HAL_GPIO_ReadPin(TANK_LOW_PORT, TANK_LOW_PIN) == GPIO_PIN_RESET);
+    return debounce_update(&d, raw);
 }
 
 bool tank_below_refill(void)
 {
-    return (HAL_GPIO_ReadPin(TANK_REFILL_PORT, TANK_REFILL_PIN) == GPIO_PIN_RESET);
+    static debounce_t d = {0};
+    bool raw = (HAL_GPIO_ReadPin(TANK_REFILL_PORT, TANK_REFILL_PIN) == GPIO_PIN_RESET);
+    return debounce_update(&d, raw);
 }
 
 bool tank_is_full(void)
 {
-    return (HAL_GPIO_ReadPin(TANK_HIGH_PORT, TANK_HIGH_PIN) == GPIO_PIN_SET);
+    static debounce_t d = {0};
+    bool raw = (HAL_GPIO_ReadPin(TANK_HIGH_PORT, TANK_HIGH_PIN) == GPIO_PIN_SET);
+    return debounce_update(&d, raw);
 }
 
 bool bot1_is_empty(void)
 {
-    return (HAL_GPIO_ReadPin(BOT1_LEVEL_PORT, BOT1_LEVEL_PIN) == GPIO_PIN_SET);
+    static debounce_t d = {0};
+    bool raw = (HAL_GPIO_ReadPin(BOT1_LEVEL_PORT, BOT1_LEVEL_PIN) == GPIO_PIN_SET);
+    return debounce_update(&d, raw);
 }
 
 bool bot2_is_empty(void)
 {
-    return (HAL_GPIO_ReadPin(BOT2_LEVEL_PORT, BOT2_LEVEL_PIN) == GPIO_PIN_SET);
+    static debounce_t d = {0};
+    bool raw = (HAL_GPIO_ReadPin(BOT2_LEVEL_PORT, BOT2_LEVEL_PIN) == GPIO_PIN_SET);
+    return debounce_update(&d, raw);
 }
 
 bool bot3_is_empty(void)
 {
-    return (HAL_GPIO_ReadPin(BOT3_LEVEL_PORT, BOT3_LEVEL_PIN) == GPIO_PIN_SET);
+    static debounce_t d = {0};
+    bool raw = (HAL_GPIO_ReadPin(BOT3_LEVEL_PORT, BOT3_LEVEL_PIN) == GPIO_PIN_SET);
+    return debounce_update(&d, raw);
 }
 
 bool bot4_is_empty(void)
 {
-    return (HAL_GPIO_ReadPin(BOT4_LEVEL_PORT, BOT4_LEVEL_PIN) == GPIO_PIN_SET);
+    static debounce_t d = {0};
+    bool raw = (HAL_GPIO_ReadPin(BOT4_LEVEL_PORT, BOT4_LEVEL_PIN) == GPIO_PIN_SET);
+    return debounce_update(&d, raw);
 }
