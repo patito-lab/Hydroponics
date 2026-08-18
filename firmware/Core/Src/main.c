@@ -23,6 +23,8 @@
 /* USER CODE BEGIN Includes */
 #include "level_check.h"
 #include "status_LEDs.h"
+#include "pump_control.h"
+#include "dose_calc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -90,6 +92,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   level_check_init();
   status_leds_init();
+  pump_control_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -131,6 +134,57 @@ int main(void)
 	  bot2_leds_set(bot2_is_empty() ? BOT_EMPTY : BOT_FULL);
 	  bot3_leds_set(bot3_is_empty() ? BOT_EMPTY : BOT_FULL);
 	  bot4_leds_set(bot4_is_empty() ? BOT_EMPTY : BOT_FULL);
+
+	  pump_control_update();
+
+	  // bench characterization: B1 press starts a test dose on the next
+	  // pump in rotation, cycling A->B->C->D->A... so all 4 can be run
+	  // without reflashing between them. debounced the same way as the
+	  // level switches - sampled once per 50 ms loop pass. TODO: once
+	  // dosing is closed-loop, remap B1 to an e-stop instead.
+	  static dose_content_t next_test_pump = DOSE_CAL_NITRATE;
+	  static bool button_stable = false;
+	  static bool button_candidate = false;
+	  static uint8_t button_count = 0;
+
+	  bool button_raw = (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET);
+	  if (button_raw == button_candidate)
+	  {
+		  if (button_count < 3) button_count++;
+	  }
+	  else
+	  {
+		  button_candidate = button_raw;
+		  button_count = 1;
+	  }
+
+	  bool button_was_stable = button_stable;
+	  if (button_count >= 3)
+	  {
+		  button_stable = button_candidate;
+	  }
+
+	  if (button_stable && !button_was_stable) // rising edge = press
+	  {
+		  // TODO: gate on !tank_is_low() before starting a dose.
+		  if (pump_dose_start(next_test_pump, dose_calc_duration_ms(next_test_pump)))
+		  {
+			  next_test_pump = (next_test_pump + 1) % DOSE_CONTENT_COUNT;
+		  }
+	  }
+
+
+	  bool any_pump_running = false;
+	  for (int i = 0; i < DOSE_CONTENT_COUNT; i++)
+	  {
+		  if (pump_is_busy((dose_content_t)i))
+		  {
+			  any_pump_running = true;
+		  }
+	  }
+	  // TODO: swap system LED to be for errors in the final code
+	  sys_leds_set(any_pump_running ? SYS_OK : SYS_OFF); // System LED indicates pump running for debug
+
 	  HAL_Delay(50);
     /* USER CODE BEGIN 3 */
   }
